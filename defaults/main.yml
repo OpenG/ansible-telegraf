@@ -1,0 +1,14 @@
+---
+telegraf_agent_interval: 10s
+telegraf_plugins:
+  - name: cpu
+    config:
+      - percpu = true
+      - totalcpu = true
+      - drop = ["cpu_time"]
+  - name: disk
+  - name: io
+  - name: mem
+  - name: swap
+  - name: system
+

@@ -1,0 +1,62 @@
+# Tags can also be specified via a normal map, but only one form at a time:
+[tags]
+  # dc = "us-east-1"
+
+# Configuration for telegraf agent
+[agent]
+	interval = "{{ telegraf_agent_interval }}"
+
+	# If utc = false, uses local time (utc is highly recommended)
+	utc = true
+
+	# Precision of writes, valid values are n, u, ms, s, m, and h
+	# note: using second precision greatly helps InfluxDB compression
+	precision = "s"
+
+	# run telegraf in debug mode
+	debug = false
+
+	# Override default hostname, if empty use os.Hostname()
+	hostname = ""
+
+
+###############################################################################
+#                                  OUTPUTS                                    #
+###############################################################################
+
+[outputs]
+
+# Configuration for influxdb server to send metrics to
+[outputs.influxdb]
+	url = "{{ telegraf_influxdb_url }}"
+
+	# The target database for metrics. This database must already exist
+	database = "telegraf" # required.
+
+	# Connection timeout (for the connection with InfluxDB), formatted as a string.
+	# Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+	# If not provided, will default to 0 (no timeout)
+	# timeout = "5s"
+
+	# username = "telegraf"
+	# password = "metricsmetricsmetricsmetrics"
+
+	# Set the user agent for the POSTs (can be useful for log differentiation)
+	# user_agent = "telegraf"
+
+
+###############################################################################
+#                                  PLUGINS                                    #
+###############################################################################
+
+{% if telegraf_plugins is defined %}
+{% for plugin in telegraf_plugins %}
+[{{ plugin.name }}]
+{% if plugin.config is defined %}
+{% for cfg in plugin.config %}
+	{{ cfg }}
+{% endfor %}
+{% endif %}
+
+{% endfor %}
+{% endif %}

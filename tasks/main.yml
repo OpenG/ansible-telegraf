@@ -1,0 +1,23 @@
+---
+- name: install package
+  yum: name="http://get.influxdb.org/telegraf/telegraf-0.1.9-1.x86_64.rpm" state=present
+  tags:
+    - telegraf
+
+- name: write configuration
+  template: src=telegraf.conf.j2 dest=/etc/opt/telegraf/telegraf.conf
+  notify:
+    - restart telegraf
+  tags:
+    - telegraf
+
+- name: setup as startup service
+  service: name=telegraf enabled=yes
+  tags:
+    - telegraf
+
+- name: start service
+  service: name=telegraf state=started
+  tags:
+    - telegraf
+
